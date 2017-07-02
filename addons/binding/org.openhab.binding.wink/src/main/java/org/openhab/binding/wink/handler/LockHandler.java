@@ -5,6 +5,8 @@ import static org.openhab.binding.wink.WinkBindingConstants.CHANNEL_LOCKSTATE;
 import org.eclipse.smarthome.core.library.types.OnOffType;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.Thing;
+import org.eclipse.smarthome.core.thing.ThingStatus;
+import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.RefreshType;
 import org.eclipse.smarthome.core.types.State;
@@ -16,6 +18,22 @@ public class LockHandler extends WinkHandler {
 
     public LockHandler(Thing thing) {
         super(thing);
+    }
+
+    @Override
+    public void initialize() {
+        if (!this.deviceConfig.validateConfig()) {
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR, "Invalid config.");
+            return;
+        }
+        updateStatus(ThingStatus.ONLINE);
+    }
+
+    @Override
+    public void channelLinked(ChannelUID channelUID) {
+        if (channelUID.getId().equals(CHANNEL_LOCKSTATE)) {
+            ReadDeviceState();
+        }
     }
 
     @Override
