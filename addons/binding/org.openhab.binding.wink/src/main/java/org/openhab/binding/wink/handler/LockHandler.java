@@ -47,13 +47,11 @@ public class LockHandler extends WinkHandler {
 
     @Override
     protected void updateDeviceStateCallback(JsonObject jsonDataBlob) {
-        // TODO Auto-generated method stub
-
+        updateState(jsonDataBlob);
     }
 
     @Override
     public void sendCommandCallback(JsonObject jsonResult) {
-        updateState(jsonResult);
     }
 
     @Override
