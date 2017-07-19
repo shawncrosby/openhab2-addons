@@ -2,7 +2,8 @@
 <thing:thing-descriptions bindingId="wink"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
-        xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd"><bridge-type id="wink_hub_2">
+        xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
+	<bridge-type id="wink_hub_2">
     	<label>Wink Hub 2</label>
     	<config-description>
     		<parameter name="access_token" type="text" required="true">
@@ -13,7 +14,7 @@
     			<label>Refresh token</label>
     			<description>The refresh token of the hub</description>
     		</parameter></config-description>
-</bridge-type>
+	</bridge-type>
 	<thing-type id="light_bulb">
         <supported-bridge-type-refs>
         	<bridge-type-ref id="wink_hub_2" />
