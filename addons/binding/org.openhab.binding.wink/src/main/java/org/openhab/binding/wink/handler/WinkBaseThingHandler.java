@@ -8,7 +8,6 @@ import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
 import org.openhab.binding.wink.client.IWinkDevice;
 import org.openhab.binding.wink.client.JsonWinkDevice;
-import org.openhab.binding.wink.client.WinkClient;
 import org.openhab.binding.wink.client.WinkSupportedDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,10 +64,10 @@ public abstract class WinkBaseThingHandler extends BaseThingHandler {
      */
     protected abstract void updateDeviceState(IWinkDevice device);
 
-    protected void registerToPubNub(Thing thing, WinkSupportedDevice deviceType) {
+    protected void registerToPubNub() {
         logger.debug("Doing the PubNub registration for :\n{}", thing.getLabel());
 
-        IWinkDevice device = WinkClient.getInstance().getDevice(deviceType, thing.getUID().getAsString());
+        IWinkDevice device = getDevice();
 
         PNConfiguration pnConfiguration = new PNConfiguration();
         pnConfiguration.setSubscribeKey(device.getPubNubSubscriberKey());
