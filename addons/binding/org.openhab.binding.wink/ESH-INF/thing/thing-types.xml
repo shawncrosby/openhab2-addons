@@ -5,15 +5,6 @@
         xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
 	<bridge-type id="wink_hub_2">
     	<label>Wink Hub 2</label>
-    	<config-description>
-    		<parameter name="access_token" type="text" required="true">
-    			<label>Access token</label>
-    			<description>The access token of the hub</description>
-    		</parameter>
-    		<parameter name="refresh_token" type="text" required="true">
-    			<label>Refresh token</label>
-    			<description>The refresh token of the hub</description>
-    		</parameter></config-description>
 	</bridge-type>
 	<thing-type id="light_bulb">
         <supported-bridge-type-refs>
@@ -26,9 +17,8 @@
             <channel id="lightlevel" typeId="lightDimmer"></channel>
         </channels>
         <config-description>
-        	<parameter name="device_id" type="text">
-        		<required>true</required></parameter>
-        	<parameter name="device_config_string" type="text" required="true"></parameter></config-description>
+            <parameter name="uuid" type="text" required="true" />
+        </config-description>
 	</thing-type>
     <thing-type id="remote">
         <supported-bridge-type-refs>
@@ -37,9 +27,8 @@
         <label>Remote</label>
         <description>Remote</description>
         <config-description>
-            <parameter name="device_id" type="text">
-                <required>true</required></parameter>
-            <parameter name="device_config_string" type="text" required="true"></parameter></config-description>
+            <parameter name="uuid" type="text" required="true" />
+        </config-description>
     </thing-type>
 	<thing-type id="binary_switch">
         <supported-bridge-type-refs>
@@ -51,9 +40,8 @@
 			<channel id="switchstate" typeId="lightSwitch" />
 		</channels>
         <config-description>
-            <parameter name="device_id" type="text">
-                <required>true</required></parameter>
-            <parameter name="device_config_string" type="text" required="true"></parameter></config-description>
+            <parameter name="uuid" type="text" required="true" />
+        </config-description>
     </thing-type>
     <thing-type id="lock">
         <supported-bridge-type-refs>
@@ -65,8 +53,7 @@
             <channel typeId="lockState" id="lockstate" />
         </channels>
        <config-description>
-            <parameter name="device_id" type="text" required="true" />
-            <parameter name="device_config_string" type="text" required="true" />
+            <parameter name="uuid" type="text" required="true" />
        </config-description>        
     </thing-type>
     <channel-type id="lightDimmer">

@@ -39,7 +39,7 @@ public class CloudRestfulWinkClient implements IWinkClient {
 
     @Override
     public List<IWinkDevice> listDevices() {
-        log.trace("Getting all devices for user");
+        log.debug("Getting all devices for user");
         List<IWinkDevice> ret = new ArrayList<IWinkDevice>();
 
         WebTarget target = winkTarget.path("/users/me/wink_devices");
@@ -60,6 +60,7 @@ public class CloudRestfulWinkClient implements IWinkClient {
 
     @Override
     public IWinkDevice getDevice(WinkSupportedDevice type, String Id) {
+        log.debug("Getting Device: {}", Id);
         WebTarget target = winkTarget.path(type.getPath() + "/" + Id);
         JsonObject resultJson = executeGet(target);
 
@@ -80,7 +81,8 @@ public class CloudRestfulWinkClient implements IWinkClient {
         String token = WinkAuthenticationService.getInstance().getAuthToken();
 
         Response response = doPut(target, payload, token);
-        if (response.getStatus() == 401) {
+        if (response.getStatus() != 200) {
+            log.debug("Got status {}, retrying with new token", response.getStatus());
             token = WinkAuthenticationService.getInstance().refreshToken();
             response = doPut(target, payload, token);
         }
@@ -91,7 +93,8 @@ public class CloudRestfulWinkClient implements IWinkClient {
     private JsonObject executeGet(WebTarget target) {
         String token = WinkAuthenticationService.getInstance().getAuthToken();
         Response response = doGet(target, token);
-        if (response.getStatus() == 401) {
+        if (response.getStatus() != 200) {
+            log.debug("Got status {}, retrying with new token", response.getStatus());
             token = WinkAuthenticationService.getInstance().refreshToken();
             response = doGet(target, token);
         }
@@ -100,6 +103,7 @@ public class CloudRestfulWinkClient implements IWinkClient {
     }
 
     private Response doGet(WebTarget target, String token) {
+        log.debug("Doing Get: {}", target);
         Response response = target.request(MediaType.APPLICATION_JSON_TYPE).header("Authorization", "Bearer " + token)
                 .get();
         return response;

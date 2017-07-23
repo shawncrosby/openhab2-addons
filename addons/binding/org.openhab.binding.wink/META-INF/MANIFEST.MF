@@ -27,9 +27,11 @@ Import-Package:
  org.openhab.binding.wink,
  org.openhab.binding.wink.handler,
  org.osgi.framework,
+ org.osgi.service.cm;version="1.5.0",
+ org.osgi.service.component;version="1.2.2",
  org.slf4j
 Service-Component: OSGI-INF/*.xml
 Export-Package: org.openhab.binding.wink,
- org.openhab.binding.wink.handler
+ org.openhab.binding.wink.handler,
+ org.openhab.binding.wink.client
 Bundle-ActivationPolicy: lazy
-Require-Bundle: org.junit

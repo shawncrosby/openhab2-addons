@@ -11,10 +11,13 @@ import org.openhab.binding.wink.client.IWinkClient;
 import org.openhab.binding.wink.client.IWinkDevice;
 import org.openhab.binding.wink.client.WinkClient;
 import org.openhab.binding.wink.client.WinkSupportedDevice;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class WinkHub2BridgeHandler extends BaseBridgeHandler {
 
     private IWinkClient client = WinkClient.getInstance();
+    private final static Logger logger = LoggerFactory.getLogger(WinkHub2BridgeHandler.class);
 
     public WinkHub2BridgeHandler(Bridge bridge) {
         super(bridge);
@@ -23,14 +26,16 @@ public class WinkHub2BridgeHandler extends BaseBridgeHandler {
     @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
         // TODO Auto-generated method stub
-
+        logger.debug("Initializing Bridge handler for winkhub");
     }
 
     public void setDesiredState(IWinkDevice device, Map<String, String> updatedState) {
+        logger.debug("Setting device state: {}", updatedState);
         client.updateDeviceState(device, updatedState);
     }
 
     public void switchOnDevice(IWinkDevice device) {
+        logger.debug("Switching on Device {}", device);
         Map<String, String> updatedState = new HashMap<String, String>();
         updatedState.put("powered", "true");
         this.setDesiredState(device, updatedState);
@@ -66,6 +71,7 @@ public class WinkHub2BridgeHandler extends BaseBridgeHandler {
     }
 
     public IWinkDevice getDevice(WinkSupportedDevice deviceType, String uuid) {
+        logger.debug("Getting device through handler {}", uuid);
         return client.getDevice(deviceType, uuid);
     }
 

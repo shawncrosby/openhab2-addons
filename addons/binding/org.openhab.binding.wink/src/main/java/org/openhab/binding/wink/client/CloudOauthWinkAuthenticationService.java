@@ -10,7 +10,6 @@ package org.openhab.binding.wink.client;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.prefs.Preferences;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -18,6 +17,9 @@ import javax.ws.rs.client.Entity;
 import javax.ws.rs.client.WebTarget;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -43,16 +45,19 @@ import com.google.gson.JsonParser;
  *
  */
 public class CloudOauthWinkAuthenticationService implements IWinkAuthenticationService {
-    private static final String WINK_NODE = "org.openhab.wink";
-    private static final String ACCESS_TOKEN = "auth_token";
-    private static final String CLIENT_ID = "client_id";
-    private static final String CLIENT_SECRET = "client_secret";
-    private static final String REFRESH_TOKEN = "refresh_token";
+    private static final String ACCESS_TOKEN = "access_token";
+
+    private static final Logger logger = LoggerFactory.getLogger(CloudOauthWinkAuthenticationService.class);
 
     private String token;
+    private String clientId;
+    private String clientSecret;
+    private String refresh_token;
 
-    public CloudOauthWinkAuthenticationService() {
-        token = Preferences.userRoot().node(WINK_NODE).get(ACCESS_TOKEN, null);
+    public CloudOauthWinkAuthenticationService(Map<String, String> properties) {
+        clientId = properties.get("client_id");
+        clientSecret = properties.get("client_secret");
+        refresh_token = properties.get("refresh_token");
     }
 
     @Override
@@ -62,12 +67,6 @@ public class CloudOauthWinkAuthenticationService implements IWinkAuthenticationS
 
     @Override
     public String refreshToken() {
-        // get clientid, secret an refresh token
-        Preferences prefs = Preferences.userRoot().node(WINK_NODE);
-        String clientId = prefs.get(CLIENT_ID, null);
-        String clientSecret = prefs.get(CLIENT_SECRET, null);
-        String refresh = prefs.get(REFRESH_TOKEN, null);
-
         Client winkClient = ClientBuilder.newClient();
         WebTarget target = winkClient.target("https://api.wink.com");
         WebTarget newToken = target.path("/oauth2/token");
@@ -76,16 +75,15 @@ public class CloudOauthWinkAuthenticationService implements IWinkAuthenticationS
         payload.put("client_id", clientId);
         payload.put("client_secret", clientSecret);
         payload.put("grant_type", "refresh_token");
-        payload.put("refresh_token", refresh);
+        payload.put("refresh_token", refresh_token);
 
         String json = new Gson().toJson(payload);
+        logger.debug("Refresh token request: {}", json);
 
         Response response = newToken.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(json));
         JsonObject responseJson = getResultAsJson(response);
 
         String newAccessToken = responseJson.get("data").getAsJsonObject().get(ACCESS_TOKEN).getAsString();
-        // get and store new token
-        prefs.put(ACCESS_TOKEN, newAccessToken);
         token = newAccessToken;
 
         return token;
@@ -93,6 +91,7 @@ public class CloudOauthWinkAuthenticationService implements IWinkAuthenticationS
 
     private JsonObject getResultAsJson(Response response) {
         String result = response.readEntity(String.class);
+        logger.debug("Json response from auth service: {}", result);
         JsonParser parser = new JsonParser();
         JsonObject resultJson = parser.parse(result).getAsJsonObject();
         return resultJson;

@@ -19,7 +19,7 @@ public class JsonWinkDevice implements IWinkDevice {
     private JsonObject json;
 
     public JsonWinkDevice(JsonObject element) {
-        this.json = element;
+        this.json = element.get("data").getAsJsonObject();
     }
 
     @Override

@@ -28,17 +28,20 @@ public abstract class WinkBaseThingHandler extends BaseThingHandler {
 
     private static final Logger logger = LoggerFactory.getLogger(WinkBaseThingHandler.class);
 
-    protected WinkHub2BridgeHandler bridgeHandler = (WinkHub2BridgeHandler) getBridge().getHandler();
+    protected WinkHub2BridgeHandler bridgeHandler;
     protected PubNub pubnub;
 
     @Override
     public void initialize() {
+        logger.debug("Initializing Device {}", getThing());
+        bridgeHandler = (WinkHub2BridgeHandler) getBridge().getHandler();
         if (getThing().getConfiguration().get("uuid") == null) {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
                     "UUID must be specified in Config");
         } else {
             if (getDevice().getCurrentState().get("connection").equals("true")) {
                 updateStatus(ThingStatus.ONLINE);
+                registerToPubNub();
             } else {
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, "Device Not Connected");
             }

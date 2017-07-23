@@ -8,13 +8,19 @@
  */
 package org.openhab.binding.wink.client;
 
+import java.util.HashMap;
+
 public class WinkAuthenticationService {
     private static IWinkAuthenticationService instance;
 
     public static IWinkAuthenticationService getInstance() {
         if (instance == null) {
-            instance = new CloudOauthWinkAuthenticationService();
+            instance = new CloudOauthWinkAuthenticationService(new HashMap<String, String>());
         }
         return instance;
+    }
+
+    public static void setInstance(IWinkAuthenticationService service) {
+        instance = service;
     }
 }
