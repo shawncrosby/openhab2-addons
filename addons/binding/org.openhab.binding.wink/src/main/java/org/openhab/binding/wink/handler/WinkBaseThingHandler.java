@@ -79,10 +79,10 @@ public abstract class WinkBaseThingHandler extends BaseThingHandler {
         this.pubnub.addListener(new SubscribeCallback() {
             @Override
             public void message(PubNub pubnub, PNMessageResult message) {
-                logger.trace("Received a reply from PubNub: {}", message.getMessage().getAsString());
                 JsonParser parser = new JsonParser();
                 JsonObject jsonMessage = parser.parse(message.getMessage().getAsString()).getAsJsonObject();
                 IWinkDevice device = new JsonWinkDevice(jsonMessage);
+                logger.debug("Received update from device: {}", device);
                 updateDeviceState(device);
             }
 

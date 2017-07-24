@@ -19,7 +19,7 @@ public class JsonWinkDevice implements IWinkDevice {
     private JsonObject json;
 
     public JsonWinkDevice(JsonObject element) {
-        this.json = element.get("data").getAsJsonObject();
+        this.json = element;
     }
 
     @Override
@@ -68,6 +68,15 @@ public class JsonWinkDevice implements IWinkDevice {
     private Map<String, String> toMap(JsonObject json) {
         return new Gson().fromJson(json, new TypeToken<HashMap<String, String>>() {
         }.getType());
+    }
+
+    @Override
+    public String toString() {
+        StringBuffer ret = new StringBuffer();
+        ret.append("Device: (" + this.getId() + ") " + this.getName());
+        ret.append(this.getDeviceType());
+
+        return ret.toString();
     }
 
 }

@@ -118,7 +118,7 @@ public class CloudRestfulWinkClient implements IWinkClient {
     private JsonObject getResultAsJson(Response response) {
         String result = response.readEntity(String.class);
         JsonParser parser = new JsonParser();
-        JsonObject resultJson = parser.parse(result).getAsJsonObject();
+        JsonObject resultJson = parser.parse(result).getAsJsonObject().get("data").getAsJsonObject();
         return resultJson;
     }
 
