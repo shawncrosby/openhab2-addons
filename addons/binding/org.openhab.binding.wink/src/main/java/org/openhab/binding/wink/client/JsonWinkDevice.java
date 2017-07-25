@@ -83,7 +83,9 @@ public class JsonWinkDevice implements IWinkDevice {
     @Override
     public String toString() {
         StringBuffer ret = new StringBuffer();
+        ret.append(this.getDeviceType() + " ");
         ret.append("Device: (" + this.getId() + ") ");
+        ret.append(this.getName());
 
         return ret.toString();
     }

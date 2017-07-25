@@ -10,18 +10,15 @@ package org.openhab.binding.wink.handler;
 
 import static org.openhab.binding.wink.WinkBindingConstants.CHANNEL_SWITCHSTATE;
 
-import java.text.DecimalFormat;
-
 import org.eclipse.smarthome.core.library.types.OnOffType;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.Thing;
-import org.eclipse.smarthome.core.thing.ThingStatus;
-import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.RefreshType;
-
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
+import org.openhab.binding.wink.client.IWinkDevice;
+import org.openhab.binding.wink.client.WinkSupportedDevice;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * TODO: The {@link BinarySwitchHandler} is responsible for handling commands, which are
@@ -29,29 +26,17 @@ import com.google.gson.JsonObject;
  *
  * @author Scott Hanson - Initial contribution
  */
-public class BinarySwitchHandler extends WinkHandler {
+public class BinarySwitchHandler extends WinkBaseThingHandler {
     public BinarySwitchHandler(Thing thing) {
         super(thing);
     }
 
-    @Override
-    public void initialize() {
-        if (!this.deviceConfig.validateConfig()) {
-            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR, "Invalid config.");
-            return;
-        }
-        updateStatus(ThingStatus.ONLINE);
-    }
-
-    @Override
-    protected String getDeviceRequestPath() {
-        return "binary_switches/" + this.deviceConfig.getDeviceId();
-    }
+    private static final Logger logger = LoggerFactory.getLogger(BinarySwitchHandler.class);
 
     @Override
     public void channelLinked(ChannelUID channelUID) {
         if (channelUID.getId().equals(CHANNEL_SWITCHSTATE)) {
-            ReadDeviceState();
+            updateDeviceState(getDevice());
         }
     }
 
@@ -64,55 +49,27 @@ public class BinarySwitchHandler extends WinkHandler {
                 setSwitchState(false);
             } else if (command instanceof RefreshType) {
                 logger.debug("Refreshing state");
-                ReadDeviceState();
+                updateDeviceState(getDevice());
             }
         }
     }
 
     private void setSwitchState(boolean state) {
         if (state) {
-            sendCommand("{\"desired_state\":{\"powered\": true}}");
+            this.bridgeHandler.switchOnDevice(getDevice());
         } else {
-            sendCommand("{\"desired_state\": {\"powered\": false}}");
-        }
-    }
-
-    private void updateState(JsonObject jsonDataBlob) {
-        boolean poweredLastReading = false;
-        JsonElement lastReadingBlob = jsonDataBlob.get("last_reading");
-        if (lastReadingBlob != null) {
-            JsonElement poweredBlob = lastReadingBlob.getAsJsonObject().get("powered");
-            if (poweredBlob != null && poweredBlob.getAsBoolean() == true) {
-                poweredLastReading = true;
-            }
-        }
-        boolean poweredDesiredState = false;
-        JsonElement desiredStateBlob = jsonDataBlob.get("desired_state");
-        if (desiredStateBlob != null) {
-            JsonElement poweredBlob = desiredStateBlob.getAsJsonObject().get("powered");
-            if (poweredBlob != null && poweredBlob.getAsBoolean() == true) {
-                poweredDesiredState = true;
-            }
-        }
-        // Don't update the state during a transition.
-        if (poweredDesiredState == poweredLastReading) {
-            updateState(CHANNEL_SWITCHSTATE, (poweredLastReading ? OnOffType.ON : OnOffType.OFF));
+            this.bridgeHandler.switchOffDevice(getDevice());
         }
     }
 
     @Override
-    public void sendCommandCallback(JsonObject jsonResult) {
-        // TODO: Is there something to do here? Maybe verify that the request succeed (e.g. that the device is online
-        // etc...)
+    protected WinkSupportedDevice getDeviceType() {
+        return WinkSupportedDevice.BINARY_SWITCH;
     }
 
     @Override
-    protected void updateDeviceStateCallback(JsonObject jsonDataBlob) {
-        updateState(jsonDataBlob);
-    }
-
-    @Override
-    protected void pubNubMessageCallback(JsonObject jsonDataBlob) {
-        updateState(jsonDataBlob);
+    protected void updateDeviceState(IWinkDevice device) {
+        boolean switchedState = Boolean.valueOf(device.getCurrentState().get("powered"));
+        updateState(CHANNEL_SWITCHSTATE, (switchedState ? OnOffType.ON : OnOffType.OFF));
     }
 }

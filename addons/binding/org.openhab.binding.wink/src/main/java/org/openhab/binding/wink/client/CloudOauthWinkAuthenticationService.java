@@ -35,13 +35,12 @@ import com.google.gson.JsonParser;
  * following parameters defined
  *
  * ---wink.cfg---
- * auth_token=initia_auth_token_xsdfljkwelfj
  * client_id=wink_app_client_id_lakjdsflakjdf
  * client_secret=wink_app_client_secret_laskdjflakjsdf
  * refresh_token=refresh_token_from_external_auth_call_aldjflakjsdoie
  * ---end---
  *
- * @author scrosby
+ * @author Shawn Crosby (sacrosby@gmail.com)
  *
  */
 public class CloudOauthWinkAuthenticationService implements IWinkAuthenticationService {
@@ -67,6 +66,7 @@ public class CloudOauthWinkAuthenticationService implements IWinkAuthenticationS
 
     @Override
     public String refreshToken() {
+        logger.debug("Refreshing token for client id {}", clientId);
         Client winkClient = ClientBuilder.newClient();
         WebTarget target = winkClient.target("https://api.wink.com");
         WebTarget newToken = target.path("/oauth2/token");
@@ -78,20 +78,21 @@ public class CloudOauthWinkAuthenticationService implements IWinkAuthenticationS
         payload.put("refresh_token", refresh_token);
 
         String json = new Gson().toJson(payload);
-        logger.debug("Refresh token request: {}", json);
 
         Response response = newToken.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(json));
         JsonObject responseJson = getResultAsJson(response);
 
         String newAccessToken = responseJson.get("data").getAsJsonObject().get(ACCESS_TOKEN).getAsString();
         token = newAccessToken;
+        logger.debug("New Access Token: {}", token);
+
+        winkClient.close();
 
         return token;
     }
 
     private JsonObject getResultAsJson(Response response) {
         String result = response.readEntity(String.class);
-        logger.debug("Json response from auth service: {}", result);
         JsonParser parser = new JsonParser();
         JsonObject resultJson = parser.parse(result).getAsJsonObject();
         return resultJson;

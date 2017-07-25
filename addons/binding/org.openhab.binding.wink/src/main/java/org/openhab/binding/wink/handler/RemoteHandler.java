@@ -10,30 +10,13 @@ package org.openhab.binding.wink.handler;
 
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.Thing;
-import org.eclipse.smarthome.core.thing.ThingStatus;
-import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.types.Command;
+import org.openhab.binding.wink.client.IWinkDevice;
+import org.openhab.binding.wink.client.WinkSupportedDevice;
 
-import com.google.gson.JsonObject;
-
-public class RemoteHandler extends WinkHandler {
+public class RemoteHandler extends WinkBaseThingHandler {
     public RemoteHandler(Thing thing) {
         super(thing);
-    }
-
-    @Override
-    public void initialize() {
-        if (!this.deviceConfig.validateConfig()) {
-            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR, "Invalid config.");
-            return;
-        }
-        // TODO: Update status.
-        updateStatus(ThingStatus.ONLINE);
-    }
-
-    @Override
-    protected String getDeviceRequestPath() {
-        return "remotes/" + this.deviceConfig.getDeviceId();
     }
 
     @Override
@@ -47,14 +30,13 @@ public class RemoteHandler extends WinkHandler {
     }
 
     @Override
-    public void sendCommandCallback(JsonObject jsonResult) {
+    protected WinkSupportedDevice getDeviceType() {
+        return WinkSupportedDevice.REMOTE;
     }
 
     @Override
-    protected void updateDeviceStateCallback(JsonObject jsonDataBlob) {
-    }
+    protected void updateDeviceState(IWinkDevice device) {
+        // TODO Auto-generated method stub
 
-    @Override
-    protected void pubNubMessageCallback(JsonObject jsonDataBlob) {
     }
 }
