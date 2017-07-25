@@ -23,16 +23,16 @@ import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.ThingUID;
 import org.openhab.binding.wink.client.IWinkDevice;
 import org.openhab.binding.wink.client.WinkClient;
-import org.openhab.binding.wink.handler.WinkHub2Handler;
+import org.openhab.binding.wink.handler.WinkHub2BridgeHandler;
 import org.openhab.binding.wink.internal.WinkHandlerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class WinkDeviceDiscoveryService extends AbstractDiscoveryService {
     private final Logger logger = LoggerFactory.getLogger(WinkDeviceDiscoveryService.class);
-    private WinkHub2Handler hubHandler;
+    private WinkHub2BridgeHandler hubHandler;
 
-    public WinkDeviceDiscoveryService(WinkHub2Handler hubHandler) throws IllegalArgumentException {
+    public WinkDeviceDiscoveryService(WinkHub2BridgeHandler hubHandler) throws IllegalArgumentException {
         super(WinkHandlerFactory.DISCOVERABLE_DEVICE_TYPES_UIDS, 10);
 
         this.hubHandler = hubHandler;
@@ -42,20 +42,27 @@ public class WinkDeviceDiscoveryService extends AbstractDiscoveryService {
 
     @Override
     protected void startScan() {
+        logger.debug("Starting Wink Discovery Scan");
         if (this.scanTask == null || this.scanTask.isDone()) {
             this.scanTask = scheduler.schedule(new Runnable() {
                 @Override
                 public void run() {
                     List<IWinkDevice> devices = WinkClient.getInstance().listDevices();
-                    ThingUID bridgeThingId = hubHandler.getThing().getBridgeUID();
+                    logger.debug("Found {} connected devices", devices.size());
+                    ThingUID bridgeThingId = hubHandler.getThing().getUID();
+                    logger.debug("Bridge id {}", bridgeThingId);
                     for (IWinkDevice device : devices) {
+                        logger.debug("Creating Discovery result {}", device);
+                        logger.debug("Device type: {}", device.getDeviceType());
                         ThingUID thingId = new ThingUID(
                                 new ThingTypeUID(BINDING_ID, device.getDeviceType().getDeviceType()), device.getId());
+                        logger.debug("New ThingUID {}", thingId);
                         Map<String, Object> props = new HashMap<String, Object>();
                         props.put("uuid", device.getId());
 
                         DiscoveryResult result = DiscoveryResultBuilder.create(thingId).withLabel(device.getName())
                                 .withProperties(props).withBridge(bridgeThingId).build();
+                        logger.debug("New Discovery Result {}", result);
                         thingDiscovered(result);
                         logger.debug("Discovered Thing: {}", thingId);
                     }

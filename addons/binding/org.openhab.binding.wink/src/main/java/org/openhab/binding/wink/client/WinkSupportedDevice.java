@@ -12,7 +12,8 @@ public enum WinkSupportedDevice {
     DIMMABLE_LIGHT("light_bulb", "/light_bulbs"),
     BINARY_SWITCH("binary_switch", "/binary_switches"),
     REMOTE("remote", "/remotes"),
-    LOCK("lock", "/locks");
+    LOCK("lock", "/locks"),
+    HUB("hub", "/hubs");
 
     private String device_type;
     private String path;

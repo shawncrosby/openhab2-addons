@@ -11,7 +11,6 @@ package org.openhab.binding.wink.handler;
 import static org.openhab.binding.wink.WinkBindingConstants.WINK_URI;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
@@ -21,7 +20,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.commons.lang.StringUtils;
-import org.eclipse.smarthome.config.discovery.DiscoveryService;
 import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.ThingStatus;
@@ -29,7 +27,6 @@ import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.thing.binding.BaseBridgeHandler;
 import org.eclipse.smarthome.core.types.Command;
 import org.openhab.binding.wink.config.WinkHub2Config;
-import org.openhab.binding.wink.internal.discovery.WinkDeviceDiscoveryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,20 +54,20 @@ public class WinkHub2Handler extends BaseBridgeHandler {
 
     @Override
     public void initialize() {
-        this.config = getThing().getConfiguration().as(WinkHub2Config.class);
-        if (validConfiguration()) {
-            WinkDeviceDiscoveryService discovery = new WinkDeviceDiscoveryService(this);
-
-            this.bundleContext.registerService(DiscoveryService.class, discovery, null);
-
-            this.scheduler.schedule(new Runnable() {
-                @Override
-                public void run() {
-                    // TODO
-                    // connect();
-                }
-            }, 0, TimeUnit.SECONDS);
-        }
+        // this.config = getThing().getConfiguration().as(WinkHub2Config.class);
+        // if (validConfiguration()) {
+        // WinkDeviceDiscoveryService discovery = new WinkDeviceDiscoveryService(null);
+        //
+        // this.bundleContext.registerService(DiscoveryService.class, discovery, null);
+        //
+        // this.scheduler.schedule(new Runnable() {
+        // @Override
+        // public void run() {
+        // // TODO
+        // // connect();
+        // }
+        // }, 0, TimeUnit.SECONDS);
+        // }
         updateStatus(ThingStatus.ONLINE);
     }
 

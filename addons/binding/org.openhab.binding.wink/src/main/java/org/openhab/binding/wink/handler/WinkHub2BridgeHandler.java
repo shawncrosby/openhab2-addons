@@ -2,7 +2,9 @@ package org.openhab.binding.wink.handler;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
+import org.eclipse.smarthome.config.discovery.DiscoveryService;
 import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.binding.BaseBridgeHandler;
@@ -11,6 +13,7 @@ import org.openhab.binding.wink.client.IWinkClient;
 import org.openhab.binding.wink.client.IWinkDevice;
 import org.openhab.binding.wink.client.WinkClient;
 import org.openhab.binding.wink.client.WinkSupportedDevice;
+import org.openhab.binding.wink.internal.discovery.WinkDeviceDiscoveryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +24,22 @@ public class WinkHub2BridgeHandler extends BaseBridgeHandler {
 
     public WinkHub2BridgeHandler(Bridge bridge) {
         super(bridge);
+    }
+
+    @Override
+    public void initialize() {
+        WinkDeviceDiscoveryService discovery = new WinkDeviceDiscoveryService(this);
+
+        this.bundleContext.registerService(DiscoveryService.class, discovery, null);
+
+        this.scheduler.schedule(new Runnable() {
+            @Override
+            public void run() {
+                // TODO
+                // connect();
+            }
+        }, 0, TimeUnit.SECONDS);
+        super.initialize();
     }
 
     @Override

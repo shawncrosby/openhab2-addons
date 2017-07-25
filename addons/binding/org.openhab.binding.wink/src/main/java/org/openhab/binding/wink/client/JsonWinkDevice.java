@@ -34,7 +34,17 @@ public class JsonWinkDevice implements IWinkDevice {
 
     @Override
     public WinkSupportedDevice getDeviceType() {
-        return WinkSupportedDevice.lookup(json.get("object_type").getAsString());
+        if (json.get("lock_id") != null) {
+            return WinkSupportedDevice.LOCK;
+        } else if (json.get("light_bulb_id") != null) {
+            return WinkSupportedDevice.DIMMABLE_LIGHT;
+        } else if (json.get("binary_switch_id") != null) {
+            return WinkSupportedDevice.BINARY_SWITCH;
+        } else if (json.get("remote_id") != null) {
+            return WinkSupportedDevice.REMOTE;
+        } else {
+            return WinkSupportedDevice.HUB;
+        }
     }
 
     @Override
@@ -73,8 +83,7 @@ public class JsonWinkDevice implements IWinkDevice {
     @Override
     public String toString() {
         StringBuffer ret = new StringBuffer();
-        ret.append("Device: (" + this.getId() + ") " + this.getName());
-        ret.append(this.getDeviceType());
+        ret.append("Device: (" + this.getId() + ") ");
 
         return ret.toString();
     }
