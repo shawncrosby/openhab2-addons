@@ -37,6 +37,7 @@ public class LightBulbHandler extends WinkBaseThingHandler {
     @Override
     public void channelLinked(ChannelUID channelUID) {
         if (channelUID.getId().equals(CHANNEL_LIGHTLEVEL)) {
+            logger.debug("Channel LIGHTLEVEL Linked");
             updateDeviceState(getDevice());
         }
     }
@@ -45,11 +46,14 @@ public class LightBulbHandler extends WinkBaseThingHandler {
     public void handleCommand(ChannelUID channelUID, Command command) {
         if (channelUID.getId().equals(CHANNEL_LIGHTLEVEL)) {
             if (command instanceof Number) {
+                logger.debug("Setting brightness {}", command);
                 int level = ((Number) command).intValue();
                 setLightLevel(level);
             } else if (command.equals(OnOffType.ON)) {
+                logger.debug("Setting full power");
                 setLightLevel(100);
             } else if (command.equals(OnOffType.OFF)) {
+                logger.debug("Turning off light");
                 setLightLevel(0);
             } else if (command instanceof RefreshType) {
                 logger.debug("Refreshing state");
@@ -75,9 +79,15 @@ public class LightBulbHandler extends WinkBaseThingHandler {
 
     @Override
     protected void updateDeviceState(IWinkDevice device) {
-        if (device.getDesiredState().get("brightness") == device.getCurrentState().get("brightness")) {
-            float brightness = Float.valueOf(device.getCurrentState().get("brightness")) * 100;
-            updateState(CHANNEL_LIGHTLEVEL, new PercentType(Integer.valueOf(String.valueOf(brightness))));
+
+        final String desired_brightness = device.getDesiredState().get("brightness");
+        logger.debug("New Desired Brightness: {}", desired_brightness);
+        final String current_brightness = device.getCurrentState().get("brightness");
+        logger.debug("Current Brightness: {}", current_brightness);
+        if (desired_brightness.equals(current_brightness)) {
+            Float brightness = Float.valueOf(current_brightness) * 100;
+            logger.debug("New brightness state: {}", brightness);
+            updateState(CHANNEL_LIGHTLEVEL, new PercentType(brightness.intValue()));
         }
     }
 }

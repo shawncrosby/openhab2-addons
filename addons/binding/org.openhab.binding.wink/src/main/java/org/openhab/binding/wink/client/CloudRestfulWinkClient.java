@@ -120,6 +120,7 @@ public class CloudRestfulWinkClient implements IWinkClient {
         JsonObject resultJson = parser.parse(result).getAsJsonObject();
 
         JsonElement ret = resultJson.get("data");
+        log.trace("Json Result: {}", ret);
 
         return ret;
     }

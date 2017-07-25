@@ -14,7 +14,7 @@
         <description>Controls dimmable light bulb</description>
 
         <channels>
-            <channel id="lightlevel" typeId="lightDimmer"></channel>
+            <channel id="lightlevel" typeId="lightDimmer" />
         </channels>
         <config-description>
             <parameter name="uuid" type="text" required="true" />
