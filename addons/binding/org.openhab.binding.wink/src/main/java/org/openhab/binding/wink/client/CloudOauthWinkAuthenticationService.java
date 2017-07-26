@@ -46,7 +46,7 @@ import com.google.gson.JsonParser;
 public class CloudOauthWinkAuthenticationService implements IWinkAuthenticationService {
     private static final String ACCESS_TOKEN = "access_token";
 
-    private static final Logger logger = LoggerFactory.getLogger(CloudOauthWinkAuthenticationService.class);
+    private final Logger logger = LoggerFactory.getLogger(CloudOauthWinkAuthenticationService.class);
 
     private String token;
     private String clientId;

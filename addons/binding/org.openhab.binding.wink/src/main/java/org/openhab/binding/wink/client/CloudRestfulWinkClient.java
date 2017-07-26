@@ -33,7 +33,7 @@ import com.google.gson.JsonParser;
 
 public class CloudRestfulWinkClient implements IWinkClient {
 
-    private static final Logger log = LoggerFactory.getLogger(CloudRestfulWinkClient.class);
+    private final Logger log = LoggerFactory.getLogger(CloudRestfulWinkClient.class);
 
     @Override
     public List<IWinkDevice> listDevices() {

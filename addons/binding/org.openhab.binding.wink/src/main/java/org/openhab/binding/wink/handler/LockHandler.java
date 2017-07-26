@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 public class LockHandler extends WinkBaseThingHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(LockHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(LockHandler.class);
 
     public LockHandler(Thing thing) {
         super(thing);

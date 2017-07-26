@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class AuthenticationConfigurationService implements ManagedService {
-    private static final Logger logger = LoggerFactory.getLogger(AuthenticationConfigurationService.class);
+    private final Logger logger = LoggerFactory.getLogger(AuthenticationConfigurationService.class);
 
     @Override
     public void updated(Dictionary<String, ?> properties) throws ConfigurationException {

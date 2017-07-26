@@ -17,10 +17,16 @@ import org.openhab.binding.wink.internal.discovery.WinkDeviceDiscoveryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Handles all command delegation from devices connected to this hub.
+ *
+ * @author Shawn Crosby
+ *
+ */
 public class WinkHub2BridgeHandler extends BaseBridgeHandler {
 
     private IWinkClient client = WinkClient.getInstance();
-    private final static Logger logger = LoggerFactory.getLogger(WinkHub2BridgeHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(WinkHub2BridgeHandler.class);
 
     public WinkHub2BridgeHandler(Bridge bridge) {
         super(bridge);
@@ -45,7 +51,7 @@ public class WinkHub2BridgeHandler extends BaseBridgeHandler {
     @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
         // TODO Auto-generated method stub
-        logger.debug("Initializing Bridge handler for winkhub");
+        logger.debug("Bridge Handler doesn't supporte any commands");
     }
 
     public void setDesiredState(IWinkDevice device, Map<String, String> updatedState) {

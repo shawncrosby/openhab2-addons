@@ -31,7 +31,7 @@ public class BinarySwitchHandler extends WinkBaseThingHandler {
         super(thing);
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(BinarySwitchHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(BinarySwitchHandler.class);
 
     @Override
     public void handleCommand(ChannelUID channelUID, Command command) {

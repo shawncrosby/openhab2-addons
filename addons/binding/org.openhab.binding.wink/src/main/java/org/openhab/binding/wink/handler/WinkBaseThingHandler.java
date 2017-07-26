@@ -28,7 +28,7 @@ public abstract class WinkBaseThingHandler extends BaseThingHandler {
         super(thing);
     }
 
-    private static final Logger logger = LoggerFactory.getLogger(WinkBaseThingHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(WinkBaseThingHandler.class);
 
     protected WinkHub2BridgeHandler bridgeHandler;
     protected PubNub pubnub;
