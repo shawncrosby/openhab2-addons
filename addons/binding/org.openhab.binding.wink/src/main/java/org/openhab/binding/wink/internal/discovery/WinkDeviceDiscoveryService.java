@@ -28,6 +28,9 @@ import org.openhab.binding.wink.internal.WinkHandlerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Used to discover new devices associated with a wink Hub
+ */
 public class WinkDeviceDiscoveryService extends AbstractDiscoveryService {
     private final Logger logger = LoggerFactory.getLogger(WinkDeviceDiscoveryService.class);
     private WinkHub2BridgeHandler hubHandler;

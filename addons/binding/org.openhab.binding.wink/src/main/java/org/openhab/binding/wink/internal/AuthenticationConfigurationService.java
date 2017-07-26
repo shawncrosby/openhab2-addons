@@ -13,6 +13,13 @@ import org.osgi.service.component.ComponentContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * This service reads configuration from the services/wink.cfg file and uses it to instantiate the
+ * authentication service needed by the binding in order to retrieve and refresh access_tokens
+ *
+ * @author Shawn Crosby
+ *
+ */
 public class AuthenticationConfigurationService implements ManagedService {
     private final Logger logger = LoggerFactory.getLogger(AuthenticationConfigurationService.class);
 
@@ -33,11 +40,24 @@ public class AuthenticationConfigurationService implements ManagedService {
         WinkAuthenticationService.setInstance(service);
     }
 
+    /**
+     * Called by the framework when the services is activated. Reads the config and configures the
+     * service
+     *
+     * @param context The context of the component as defined by the framework
+     * @throws Exception
+     */
     public void activate(ComponentContext context) throws Exception {
         Dictionary<String, Object> properties = context.getProperties();
         configure(properties);
     }
 
+    /**
+     * Called by the framework when the service is deactivated.
+     *
+     * @param context The context of the component as defined by the framework
+     * @throws Exception
+     */
     public void deactivate(ComponentContext context) throws Exception {
         logger.debug("Deactivating AuthConfigService");
     }

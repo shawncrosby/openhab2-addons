@@ -69,17 +69,26 @@ public abstract class WinkBaseThingHandler extends BaseThingHandler {
      */
     protected abstract WinkSupportedDevice getDeviceType();
 
+    /**
+     * Retrieves the device configuration and state from the API
+     *
+     * @return
+     */
     protected IWinkDevice getDevice() {
         return bridgeHandler.getDevice(getDeviceType(), getThing().getConfiguration().get("uuid").toString());
     }
 
     /**
-     * Subclasses must define the properties of the current device state that are relevant.
+     * Subclasses must implement this method to perform the mapping between the properties and state
+     * retrieved from the API and how that state is represented in OpenHab.
      *
      * @param device
      */
     protected abstract void updateDeviceState(IWinkDevice device);
 
+    /**
+     * Handles state change events from the api
+     */
     protected void registerToPubNub() {
         logger.debug("Doing the PubNub registration for :\n{}", thing.getLabel());
 

@@ -54,11 +54,22 @@ public class WinkHub2BridgeHandler extends BaseBridgeHandler {
         logger.debug("Bridge Handler doesn't supporte any commands");
     }
 
+    /**
+     * Attempts to change the state of a specified device to the provided state.
+     *
+     * @param device The device to update
+     * @param updatedState Map of properties to update and the new values
+     */
     public void setDesiredState(IWinkDevice device, Map<String, String> updatedState) {
         logger.debug("Setting device state: {}", updatedState);
         client.updateDeviceState(device, updatedState);
     }
 
+    /**
+     * Change the state of a device to a 'powered' state
+     *
+     * @param device The device to power on
+     */
     public void switchOnDevice(IWinkDevice device) {
         logger.debug("Switching on Device {}", device);
         Map<String, String> updatedState = new HashMap<String, String>();
@@ -66,24 +77,45 @@ public class WinkHub2BridgeHandler extends BaseBridgeHandler {
         this.setDesiredState(device, updatedState);
     }
 
+    /**
+     * Change the 'powered' state of a device to off
+     *
+     * @param device The device to power off
+     */
     public void switchOffDevice(IWinkDevice device) {
         Map<String, String> updatedState = new HashMap<String, String>();
         updatedState.put("powered", "false");
         this.setDesiredState(device, updatedState);
     }
 
+    /**
+     * Set the state of a lockable device to 'locked'
+     *
+     * @param device The device to lock
+     */
     public void lockDevice(IWinkDevice device) {
         Map<String, String> updatedState = new HashMap<String, String>();
         updatedState.put("locked", "true");
         this.setDesiredState(device, updatedState);
     }
 
+    /**
+     * Set the 'locked' state of a lockable device to unlocked
+     *
+     * @param device The device to unlock
+     */
     public void unLockDevice(IWinkDevice device) {
         Map<String, String> updatedState = new HashMap<String, String>();
         updatedState.put("locked", "false");
         this.setDesiredState(device, updatedState);
     }
 
+    /**
+     * Sets the dimmer level of a device to the level specified as a percentage
+     *
+     * @param device The device to change brightness
+     * @param level The percentage of brightness desired
+     */
     public void setDeviceDimmerLevel(IWinkDevice device, int level) {
         Map<String, String> updatedState = new HashMap<String, String>();
         if (level > 0) {
@@ -95,6 +127,13 @@ public class WinkHub2BridgeHandler extends BaseBridgeHandler {
         this.setDesiredState(device, updatedState);
     }
 
+    /**
+     * Retrieve a specified device from the Hub API
+     *
+     * @param deviceType The type of device to retrieve
+     * @param uuid The unique identifier for the device
+     * @return The device
+     */
     public IWinkDevice getDevice(WinkSupportedDevice deviceType, String uuid) {
         logger.debug("Getting device through handler {}", uuid);
         return client.getDevice(deviceType, uuid);
