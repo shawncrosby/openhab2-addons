@@ -35,15 +35,14 @@ public class CloudRestfulWinkClient implements IWinkClient {
 
     private static final Logger log = LoggerFactory.getLogger(CloudRestfulWinkClient.class);
 
-    private Client winkClient = ClientBuilder.newBuilder().build();
-    private WebTarget winkTarget = winkClient.target(WINK_URI);
-
     @Override
     public List<IWinkDevice> listDevices() {
         log.debug("Getting all devices for user");
         List<IWinkDevice> ret = new ArrayList<IWinkDevice>();
 
-        WebTarget target = winkTarget.path("/users/me/wink_devices");
+        Client winkClient = ClientBuilder.newClient();
+        WebTarget target = winkClient.target(WINK_URI).path("/users/me/wink_devices");
+
         JsonArray resultJson = executeGet(target).getAsJsonArray();
         Iterator<JsonElement> iterator = resultJson.getAsJsonArray().iterator();
 
@@ -54,24 +53,30 @@ public class CloudRestfulWinkClient implements IWinkClient {
             }
             ret.add(new JsonWinkDevice(element.getAsJsonObject()));
         }
+        winkClient.close();
+
         return ret;
     }
 
     @Override
     public IWinkDevice getDevice(WinkSupportedDevice type, String Id) {
         log.debug("Getting Device: {}", Id);
-        WebTarget target = winkTarget.path(type.getPath() + "/" + Id);
+        Client winkClient = ClientBuilder.newClient();
+        WebTarget target = winkClient.target(WINK_URI).path(type.getPath() + "/" + Id);
         JsonObject resultJson = executeGet(target).getAsJsonObject();
+        winkClient.close();
 
         return new JsonWinkDevice(resultJson);
     }
 
     @Override
     public IWinkDevice updateDeviceState(IWinkDevice device, Map<String, String> updatedState) {
-        WebTarget target = winkTarget.path(device.getDeviceType().getPath() + "/" + device.getId());
+        Client winkClient = ClientBuilder.newClient();
+        WebTarget target = winkClient.target(WINK_URI).path(device.getDeviceType().getPath() + "/" + device.getId());
         String desired_state = new Gson().toJson(updatedState);
         Response response = executePut(target, desired_state);
         JsonObject jsonResult = getResultAsJson(response).getAsJsonObject();
+        winkClient.close();
 
         return new JsonWinkDevice(jsonResult);
     }

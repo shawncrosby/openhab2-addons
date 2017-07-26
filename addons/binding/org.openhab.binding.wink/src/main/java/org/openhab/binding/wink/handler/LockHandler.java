@@ -65,15 +65,6 @@ public class LockHandler extends WinkBaseThingHandler {
     }
 
     @Override
-    public void channelLinked(ChannelUID channelUID) {
-        if (channelUID.getId().equals(CHANNEL_LOCKSTATE)) {
-            logger.trace("Channel CHANNEL_LOCKSTATE is LINKED");
-            updateDeviceState(getDevice());
-        }
-        super.channelLinked(channelUID);
-    }
-
-    @Override
     protected WinkSupportedDevice getDeviceType() {
         return WinkSupportedDevice.LOCK;
     }

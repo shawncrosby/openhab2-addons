@@ -34,13 +34,6 @@ public class BinarySwitchHandler extends WinkBaseThingHandler {
     private static final Logger logger = LoggerFactory.getLogger(BinarySwitchHandler.class);
 
     @Override
-    public void channelLinked(ChannelUID channelUID) {
-        if (channelUID.getId().equals(CHANNEL_SWITCHSTATE)) {
-            updateDeviceState(getDevice());
-        }
-    }
-
-    @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
         if (channelUID.getId().equals(CHANNEL_SWITCHSTATE)) {
             if (command.equals(OnOffType.ON)) {
@@ -72,4 +65,5 @@ public class BinarySwitchHandler extends WinkBaseThingHandler {
         boolean switchedState = Boolean.valueOf(device.getCurrentState().get("powered"));
         updateState(CHANNEL_SWITCHSTATE, (switchedState ? OnOffType.ON : OnOffType.OFF));
     }
+
 }

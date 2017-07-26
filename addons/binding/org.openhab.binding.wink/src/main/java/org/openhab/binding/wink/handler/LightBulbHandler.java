@@ -35,14 +35,6 @@ public class LightBulbHandler extends WinkBaseThingHandler {
     }
 
     @Override
-    public void channelLinked(ChannelUID channelUID) {
-        if (channelUID.getId().equals(CHANNEL_LIGHTLEVEL)) {
-            logger.debug("Channel LIGHTLEVEL Linked");
-            updateDeviceState(getDevice());
-        }
-    }
-
-    @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
         if (channelUID.getId().equals(CHANNEL_LIGHTLEVEL)) {
             if (command instanceof Number) {
@@ -90,4 +82,5 @@ public class LightBulbHandler extends WinkBaseThingHandler {
             updateState(CHANNEL_LIGHTLEVEL, new PercentType(brightness.intValue()));
         }
     }
+
 }

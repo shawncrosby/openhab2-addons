@@ -2,6 +2,8 @@ package org.openhab.binding.wink.handler;
 
 import java.util.Arrays;
 
+import org.eclipse.smarthome.core.thing.Channel;
+import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingStatusDetail;
@@ -49,6 +51,17 @@ public abstract class WinkBaseThingHandler extends BaseThingHandler {
         super.initialize();
     }
 
+    @Override
+    public void channelLinked(ChannelUID channelUID) {
+        for (Channel channel : getThing().getChannels()) {
+            if (channelUID.equals(channel.getUID())) {
+                logger.debug("Channel {} Linked", channelUID.getId());
+                updateDeviceState(getDevice());
+                break;
+            }
+        }
+    }
+
     /**
      * Subclasses must define the correct wink supported device type
      *
@@ -93,7 +106,7 @@ public abstract class WinkBaseThingHandler extends BaseThingHandler {
             @Override
             public void status(PubNub arg0, PNStatus status) {
                 if (status.isError()) {
-                    logger.error("PubNub communication error: {}", status.getStatusCode());
+                    logger.error("PubNub communication error: {}", status);
                 } else {
                     logger.trace("PubNub status: no error.");
                 }

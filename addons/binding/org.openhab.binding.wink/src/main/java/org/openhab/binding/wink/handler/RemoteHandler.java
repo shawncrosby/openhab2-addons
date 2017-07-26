@@ -20,11 +20,6 @@ public class RemoteHandler extends WinkBaseThingHandler {
     }
 
     @Override
-    public void channelLinked(ChannelUID channelUID) {
-        // TODO
-    }
-
-    @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
         // TODO
     }
@@ -39,4 +34,5 @@ public class RemoteHandler extends WinkBaseThingHandler {
         // TODO Auto-generated method stub
 
     }
+
 }
