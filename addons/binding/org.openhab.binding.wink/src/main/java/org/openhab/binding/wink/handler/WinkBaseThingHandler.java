@@ -43,6 +43,7 @@ public abstract class WinkBaseThingHandler extends BaseThingHandler {
         } else {
             if (getDevice().getCurrentState().get("connection").equals("true")) {
                 updateStatus(ThingStatus.ONLINE);
+                updateDeviceState(getDevice());
                 registerToPubNub();
             } else {
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, "Device Not Connected");

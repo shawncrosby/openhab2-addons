@@ -32,13 +32,13 @@ public class LockHandler extends WinkBaseThingHandler {
     public void handleCommand(ChannelUID channelUID, Command command) {
         if (channelUID.getId().equals(CHANNEL_LOCKSTATE)) {
             if (command.equals(OnOffType.ON)) {
-                logger.debug("Locking Thing: " + this.thing.getLabel());
+                logger.debug("Locking Thing: {}", this.thing.getLabel());
                 setLock(true);
             } else if (command.equals(OnOffType.OFF)) {
-                logger.debug("UnLocking Thing: " + this.thing.getLabel());
+                logger.debug("UnLocking Thing: {}", this.thing.getLabel());
                 setLock(false);
             } else if (command instanceof RefreshType) {
-                logger.debug("Refreshing state of Thing: " + this.thing.getLabel());
+                logger.debug("Refreshing state of Thing: {}", this.thing.getLabel());
                 updateDeviceState(getDevice());
             }
         }

@@ -23,6 +23,7 @@ import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.ThingUID;
 import org.openhab.binding.wink.client.IWinkDevice;
 import org.openhab.binding.wink.client.WinkClient;
+import org.openhab.binding.wink.client.WinkSupportedDevice;
 import org.openhab.binding.wink.handler.WinkHub2BridgeHandler;
 import org.openhab.binding.wink.internal.WinkHandlerFactory;
 import org.slf4j.Logger;
@@ -53,21 +54,20 @@ public class WinkDeviceDiscoveryService extends AbstractDiscoveryService {
                     List<IWinkDevice> devices = WinkClient.getInstance().listDevices();
                     logger.debug("Found {} connected devices", devices.size());
                     ThingUID bridgeThingId = hubHandler.getThing().getUID();
-                    logger.debug("Bridge id {}", bridgeThingId);
                     for (IWinkDevice device : devices) {
-                        logger.debug("Creating Discovery result {}", device);
-                        logger.debug("Device type: {}", device.getDeviceType());
-                        ThingUID thingId = new ThingUID(
-                                new ThingTypeUID(BINDING_ID, device.getDeviceType().getDeviceType()), device.getId());
-                        logger.debug("New ThingUID {}", thingId);
-                        Map<String, Object> props = new HashMap<String, Object>();
-                        props.put("uuid", device.getId());
+                        if (!WinkSupportedDevice.HUB.equals(device.getDeviceType())) {
+                            logger.debug("Creating Discovery result {}", device);
+                            ThingUID thingId = new ThingUID(
+                                    new ThingTypeUID(BINDING_ID, device.getDeviceType().getDeviceType()),
+                                    device.getId());
+                            Map<String, Object> props = new HashMap<String, Object>();
+                            props.put("uuid", device.getId());
 
-                        DiscoveryResult result = DiscoveryResultBuilder.create(thingId).withLabel(device.getName())
-                                .withProperties(props).withBridge(bridgeThingId).build();
-                        logger.debug("New Discovery Result {}", result);
-                        thingDiscovered(result);
-                        logger.debug("Discovered Thing: {}", thingId);
+                            DiscoveryResult result = DiscoveryResultBuilder.create(thingId).withLabel(device.getName())
+                                    .withProperties(props).withBridge(bridgeThingId).build();
+                            thingDiscovered(result);
+                            logger.debug("Discovered Thing: {}", thingId);
+                        }
                     }
                 }
             }, 0, TimeUnit.SECONDS);

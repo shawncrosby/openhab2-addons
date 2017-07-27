@@ -76,7 +76,7 @@ public class LightBulbHandler extends WinkBaseThingHandler {
         logger.debug("New Desired Brightness: {}", desired_brightness);
         final String current_brightness = device.getCurrentState().get("brightness");
         logger.debug("Current Brightness: {}", current_brightness);
-        if (desired_brightness == null || desired_brightness.equals(current_brightness)) {
+        if (desired_brightness != null && desired_brightness.equals(current_brightness)) {
             Float brightness = Float.valueOf(current_brightness) * 100;
             logger.debug("New brightness state: {}", brightness);
             updateState(CHANNEL_LIGHTLEVEL, new PercentType(brightness.intValue()));
