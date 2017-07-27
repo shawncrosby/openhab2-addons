@@ -90,8 +90,8 @@ public class LightBulbHandler extends WinkBaseThingHandler {
         final String desired_power_state = device.getDesiredState().get("powered");
         final String current_power_state = device.getCurrentState().get("powered");
 
-        if (desired_power_state == null || desired_power_state.equals(current_power_state)) {
-            if (current_power_state == "true") {
+        if (desired_power_state.equals(null) || desired_power_state.equals(current_power_state)) {
+            if (current_power_state.equals("true")) {
                 logger.debug("New Light State: ON");
                 updateState(CHANNEL_LIGHTSTATE, OnOffType.ON);
             } else {
