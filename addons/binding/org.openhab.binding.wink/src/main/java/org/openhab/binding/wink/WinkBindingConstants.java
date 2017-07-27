@@ -28,6 +28,7 @@ public class WinkBindingConstants {
 
     // List of all Channel ids for a light bulb
     public final static String CHANNEL_LIGHTLEVEL = "lightlevel";
+    public final static String CHANNEL_LIGHTSTATE = "lightstate";
     public final static String CHANNEL_SWITCHSTATE = "switchstate";
     public final static String CHANNEL_LOCKSTATE = "lockstate";
 

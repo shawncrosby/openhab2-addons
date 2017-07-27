@@ -15,6 +15,7 @@
 
         <channels>
             <channel id="lightlevel" typeId="lightDimmer" />
+            <channel id="lightstate" typeId="lightSwitch" />
         </channels>
         <config-description>
             <parameter name="uuid" type="text" required="true" />

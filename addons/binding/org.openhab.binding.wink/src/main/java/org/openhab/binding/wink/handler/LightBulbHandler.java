@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.wink.handler;
 
-import static org.openhab.binding.wink.WinkBindingConstants.CHANNEL_LIGHTLEVEL;
+import static org.openhab.binding.wink.WinkBindingConstants.*;
 
 import org.eclipse.smarthome.core.library.types.OnOffType;
 import org.eclipse.smarthome.core.library.types.PercentType;
@@ -51,13 +51,21 @@ public class LightBulbHandler extends WinkBaseThingHandler {
                 logger.debug("Refreshing state");
                 updateDeviceState(getDevice());
             }
+        } else if (channelUID.getId().equals(CHANNEL_LIGHTSTATE)) {
+            if (command.equals(OnOffType.ON)) {
+                logger.debug("Turning Light On");
+                bridgeHandler.switchOnDevice(getDevice());
+            } else {
+                logger.debug("Turning Light Off");
+                bridgeHandler.switchOffDevice(getDevice());
+            }
         }
     }
 
     private void setLightLevel(int level) {
         if (level > 0) {
-            bridgeHandler.switchOnDevice(getDevice());
             bridgeHandler.setDeviceDimmerLevel(getDevice(), level);
+            bridgeHandler.switchOnDevice(getDevice());
         } else {
             bridgeHandler.switchOffDevice(getDevice());
         }
@@ -73,13 +81,23 @@ public class LightBulbHandler extends WinkBaseThingHandler {
     protected void updateDeviceState(IWinkDevice device) {
 
         final String desired_brightness = device.getDesiredState().get("brightness");
-        logger.debug("New Desired Brightness: {}", desired_brightness);
         final String current_brightness = device.getCurrentState().get("brightness");
-        logger.debug("Current Brightness: {}", current_brightness);
         if (desired_brightness != null && desired_brightness.equals(current_brightness)) {
             Float brightness = Float.valueOf(current_brightness) * 100;
             logger.debug("New brightness state: {}", brightness);
             updateState(CHANNEL_LIGHTLEVEL, new PercentType(brightness.intValue()));
+        }
+        final String desired_power_state = device.getDesiredState().get("powered");
+        final String current_power_state = device.getCurrentState().get("powered");
+
+        if (desired_power_state == null || desired_power_state.equals(current_power_state)) {
+            if (current_power_state == "true") {
+                logger.debug("New Light State: ON");
+                updateState(CHANNEL_LIGHTSTATE, OnOffType.ON);
+            } else {
+                logger.debug("New Light State: OFF");
+                updateState(CHANNEL_LIGHTSTATE, OnOffType.OFF);
+            }
         }
     }
 
