@@ -61,7 +61,7 @@ public class CloudOauthWinkAuthenticationService implements IWinkAuthenticationS
 
     @Override
     public String getAuthToken() {
-        return getCurrentToken();
+        return token;
     }
 
     @Override
@@ -88,6 +88,7 @@ public class CloudOauthWinkAuthenticationService implements IWinkAuthenticationS
             logger.debug("New Access Token: {}", token);
         } else {
             logger.debug("Got status: {} refreshing token", response.getStatus());
+            logger.trace("Error Response: {}", responseJson.get("errors").getAsString());
             throw new RuntimeException("Invalid refresh token or app key and secret");
         }
 
@@ -102,9 +103,4 @@ public class CloudOauthWinkAuthenticationService implements IWinkAuthenticationS
         JsonObject resultJson = parser.parse(result).getAsJsonObject();
         return resultJson;
     }
-
-    private String getCurrentToken() {
-        return token;
-    }
-
 }
