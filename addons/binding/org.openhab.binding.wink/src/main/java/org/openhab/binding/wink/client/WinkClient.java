@@ -8,6 +8,12 @@
  */
 package org.openhab.binding.wink.client;
 
+/**
+ * This is a singleton instance of a wink client for communicating with the wink rest api.
+ *
+ * @author Shawn Crosby
+ *
+ */
 public class WinkClient {
     private static IWinkClient instance;
 

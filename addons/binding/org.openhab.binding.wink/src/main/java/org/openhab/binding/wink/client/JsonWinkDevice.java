@@ -15,6 +15,12 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 
+/**
+ * This class parses json from the wink api and from pubnub and produces an IWinkDevice
+ *
+ * @author Shawn Crosby
+ *
+ */
 public class JsonWinkDevice implements IWinkDevice {
     private JsonObject json;
 

@@ -14,6 +14,12 @@ import org.eclipse.smarthome.core.types.Command;
 import org.openhab.binding.wink.client.IWinkDevice;
 import org.openhab.binding.wink.client.WinkSupportedDevice;
 
+/**
+ * Its a remote
+ *
+ * @author Sebastian
+ *
+ */
 public class RemoteHandler extends WinkBaseThingHandler {
     public RemoteHandler(Thing thing) {
         super(thing);

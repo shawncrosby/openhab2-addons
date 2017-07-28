@@ -10,6 +10,12 @@ package org.openhab.binding.wink.client;
 
 import java.util.HashMap;
 
+/**
+ * This is a singleton instance of the authentication service to get tokens from the wink rest api
+ *
+ * @author Shawn Crosby
+ *
+ */
 public class WinkAuthenticationService {
     private static IWinkAuthenticationService instance;
 

@@ -31,6 +31,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
+/**
+ * This implemention communicates with the wink rest api.
+ *
+ * @author Shawn Crosby
+ *
+ */
 public class CloudRestfulWinkClient implements IWinkClient {
 
     private final Logger log = LoggerFactory.getLogger(CloudRestfulWinkClient.class);
@@ -72,9 +78,11 @@ public class CloudRestfulWinkClient implements IWinkClient {
     @Override
     public IWinkDevice updateDeviceState(IWinkDevice device, Map<String, String> updatedState) {
         Client winkClient = ClientBuilder.newClient();
-        WebTarget target = winkClient.target(WINK_URI).path(device.getDeviceType().getPath() + "/" + device.getId());
+        WebTarget target = winkClient.target(WINK_URI)
+                .path(device.getDeviceType().getPath() + "/" + device.getId() + "/desired_state");
         String desired_state = new Gson().toJson(updatedState);
-        Response response = executePut(target, desired_state);
+        String wrapper = "{\"desired_state\":" + desired_state + "}";
+        Response response = executePut(target, wrapper);
         JsonObject jsonResult = getResultAsJson(response).getAsJsonObject();
         winkClient.close();
 
@@ -114,6 +122,7 @@ public class CloudRestfulWinkClient implements IWinkClient {
     }
 
     private Response doPut(WebTarget target, String payload, String token) {
+        log.debug("Doing Put: {}, Payload: {}", target, payload);
         Response response = target.request(MediaType.APPLICATION_JSON_TYPE).header("Authorization", "Bearer " + token)
                 .put(Entity.json(payload));
         return response;

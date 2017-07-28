@@ -20,6 +20,12 @@ import org.openhab.binding.wink.client.WinkSupportedDevice;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Handles locks connected to the wink hub
+ *
+ * @author Shawn Crosby
+ *
+ */
 public class LockHandler extends WinkBaseThingHandler {
 
     private final Logger logger = LoggerFactory.getLogger(LockHandler.class);

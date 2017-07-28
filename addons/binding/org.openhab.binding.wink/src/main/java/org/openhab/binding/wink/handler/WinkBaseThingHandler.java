@@ -23,6 +23,13 @@ import com.pubnub.api.models.consumer.PNStatus;
 import com.pubnub.api.models.consumer.pubsub.PNMessageResult;
 import com.pubnub.api.models.consumer.pubsub.PNPresenceEventResult;
 
+/**
+ * This is the base class for devices connected to the wink hub. Implements pubnub registration
+ * and initialization for all wink devices.
+ *
+ * @author Shawn Crosby
+ *
+ */
 public abstract class WinkBaseThingHandler extends BaseThingHandler {
     public WinkBaseThingHandler(Thing thing) {
         super(thing);
