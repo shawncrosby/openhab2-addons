@@ -68,11 +68,13 @@ public class CloudRestfulWinkClient implements IWinkClient {
     public IWinkDevice getDevice(WinkSupportedDevice type, String Id) {
         log.debug("Getting Device: {}", Id);
         Client winkClient = ClientBuilder.newClient();
+
         WebTarget target = winkClient.target(WINK_URI).path(type.getPath() + "/" + Id);
-        JsonObject resultJson = executeGet(target).getAsJsonObject();
+        JsonElement resultJson = executeGet(target);
+
         winkClient.close();
 
-        return new JsonWinkDevice(resultJson);
+        return new JsonWinkDevice(resultJson.getAsJsonObject());
     }
 
     @Override
@@ -82,24 +84,24 @@ public class CloudRestfulWinkClient implements IWinkClient {
                 .path(device.getDeviceType().getPath() + "/" + device.getId() + "/desired_state");
         String desired_state = new Gson().toJson(updatedState);
         String wrapper = "{\"desired_state\":" + desired_state + "}";
-        Response response = executePut(target, wrapper);
-        JsonObject jsonResult = getResultAsJson(response).getAsJsonObject();
+        JsonElement jsonResult = executePut(target, wrapper);
         winkClient.close();
 
-        return new JsonWinkDevice(jsonResult);
+        return new JsonWinkDevice(jsonResult.getAsJsonObject());
     }
 
-    private Response executePut(WebTarget target, String payload) {
+    private JsonElement executePut(WebTarget target, String payload) {
         String token = WinkAuthenticationService.getInstance().getAuthToken();
 
         Response response = doPut(target, payload, token);
+
         if (response.getStatus() != 200) {
             log.debug("Got status {}, retrying with new token", response.getStatus());
             token = WinkAuthenticationService.getInstance().refreshToken();
             response = doPut(target, payload, token);
         }
 
-        return response;
+        return getResultAsJson(response);
     }
 
     private JsonElement executeGet(WebTarget target) {
@@ -110,8 +112,8 @@ public class CloudRestfulWinkClient implements IWinkClient {
             token = WinkAuthenticationService.getInstance().refreshToken();
             response = doGet(target, token);
         }
-        JsonElement resultJson = getResultAsJson(response);
-        return resultJson;
+
+        return getResultAsJson(response);
     }
 
     private Response doGet(WebTarget target, String token) {

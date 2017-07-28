@@ -9,6 +9,7 @@ import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
 import org.eclipse.smarthome.core.types.Command;
+import org.openhab.binding.wink.client.AuthenticationException;
 import org.openhab.binding.wink.client.IWinkDevice;
 import org.openhab.binding.wink.client.JsonWinkDevice;
 import org.openhab.binding.wink.client.WinkSupportedDevice;
@@ -57,9 +58,12 @@ public abstract class WinkBaseThingHandler extends BaseThingHandler {
                 } else {
                     updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, "Device Not Connected");
                 }
-            } catch (RuntimeException e) {
+            } catch (AuthenticationException e) {
                 logger.error("Unable to initialize device: {}", e.getMessage());
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR, e.getMessage());
+            } catch (RuntimeException e) {
+                logger.error("Unable to initialize device: {}", e.getMessage());
+                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, e.getMessage());
             }
         }
         super.initialize();
@@ -93,7 +97,7 @@ public abstract class WinkBaseThingHandler extends BaseThingHandler {
                     break;
                 }
             }
-        } catch (RuntimeException e) {
+        } catch (AuthenticationException e) {
             logger.error("Unable to process channel link: {}", e.getMessage());
         }
     }
@@ -160,7 +164,7 @@ public abstract class WinkBaseThingHandler extends BaseThingHandler {
             });
 
             this.pubnub.subscribe().channels(Arrays.asList(device.getPubNubChannel())).execute();
-        } catch (RuntimeException e) {
+        } catch (AuthenticationException e) {
             logger.error("Unable to subscribe to pubnub: {}", e.getMessage());
         }
     }

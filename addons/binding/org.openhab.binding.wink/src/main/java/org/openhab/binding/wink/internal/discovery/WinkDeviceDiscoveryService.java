@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Used to discover new devices associated with a wink Hub
  *
- * @author Sebastian
+ * @author Sebastian Marchand
  */
 public class WinkDeviceDiscoveryService extends AbstractDiscoveryService {
     private final Logger logger = LoggerFactory.getLogger(WinkDeviceDiscoveryService.class);

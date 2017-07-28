@@ -9,6 +9,7 @@ import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.binding.BaseBridgeHandler;
 import org.eclipse.smarthome.core.types.Command;
+import org.openhab.binding.wink.client.AuthenticationException;
 import org.openhab.binding.wink.client.IWinkClient;
 import org.openhab.binding.wink.client.IWinkDevice;
 import org.openhab.binding.wink.client.WinkClient;
@@ -64,7 +65,7 @@ public class WinkHub2BridgeHandler extends BaseBridgeHandler {
         logger.debug("Setting device state: {}", updatedState);
         try {
             client.updateDeviceState(device, updatedState);
-        } catch (RuntimeException e) {
+        } catch (AuthenticationException e) {
             logger.error("Unable to communicate with wink api: {}", e.getMessage());
         }
     }

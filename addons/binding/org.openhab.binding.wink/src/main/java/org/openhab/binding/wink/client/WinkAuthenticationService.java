@@ -19,6 +19,11 @@ import java.util.HashMap;
 public class WinkAuthenticationService {
     private static IWinkAuthenticationService instance;
 
+    /**
+     * Returns a singleton instance of the current authentication service
+     *
+     * @return
+     */
     public static IWinkAuthenticationService getInstance() {
         if (instance == null) {
             instance = new CloudOauthWinkAuthenticationService(new HashMap<String, String>());
@@ -26,6 +31,11 @@ public class WinkAuthenticationService {
         return instance;
     }
 
+    /**
+     * Creates a new singleton authentication service
+     *
+     * @param service
+     */
     public static void setInstance(IWinkAuthenticationService service) {
         instance = service;
     }

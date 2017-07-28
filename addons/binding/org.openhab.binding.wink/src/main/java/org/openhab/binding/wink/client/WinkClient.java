@@ -17,6 +17,11 @@ package org.openhab.binding.wink.client;
 public class WinkClient {
     private static IWinkClient instance;
 
+    /**
+     * Get a singleton instance of the wink client
+     *
+     * @return
+     */
     public static IWinkClient getInstance() {
         if (instance == null) {
             instance = new CloudRestfulWinkClient();
@@ -25,6 +30,11 @@ public class WinkClient {
         return instance;
     }
 
+    /**
+     * Allows for setting an instance of a new client. Mostly for unit tests
+     *
+     * @param testClient
+     */
     public static void setInstance(IWinkClient testClient) {
         instance = testClient;
     }

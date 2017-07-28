@@ -34,7 +34,7 @@ public class AuthenticationConfigurationService implements ManagedService {
         props.put("client_id", (String) properties.get("client_id"));
         props.put("client_secret", (String) properties.get("client_secret"));
         props.put("refresh_token", (String) properties.get("refresh_token"));
-        logger.debug("Configuring Authentication Service {}", props);
+        logger.debug("Configuring Wink Authentication Service {}", props);
         IWinkAuthenticationService service = new CloudOauthWinkAuthenticationService(props);
 
         WinkAuthenticationService.setInstance(service);

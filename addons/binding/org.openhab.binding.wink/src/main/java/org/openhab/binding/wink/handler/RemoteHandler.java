@@ -17,7 +17,7 @@ import org.openhab.binding.wink.client.WinkSupportedDevice;
 /**
  * Its a remote
  *
- * @author Sebastian
+ * @author Sebastian Marchand
  *
  */
 public class RemoteHandler extends WinkBaseThingHandler {
