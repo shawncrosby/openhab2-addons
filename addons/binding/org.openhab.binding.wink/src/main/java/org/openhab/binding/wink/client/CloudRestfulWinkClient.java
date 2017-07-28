@@ -32,7 +32,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 /**
- * This implemention communicates with the wink rest api.
+ * This implementation communicates with the wink rest api.
  *
  * @author Shawn Crosby
  *

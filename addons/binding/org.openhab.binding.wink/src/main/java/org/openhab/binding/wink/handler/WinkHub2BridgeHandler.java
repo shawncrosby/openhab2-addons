@@ -62,7 +62,11 @@ public class WinkHub2BridgeHandler extends BaseBridgeHandler {
      */
     public void setDesiredState(IWinkDevice device, Map<String, String> updatedState) {
         logger.debug("Setting device state: {}", updatedState);
-        client.updateDeviceState(device, updatedState);
+        try {
+            client.updateDeviceState(device, updatedState);
+        } catch (RuntimeException e) {
+            logger.error("Unable to communicate with wink api: {}", e.getMessage());
+        }
     }
 
     /**

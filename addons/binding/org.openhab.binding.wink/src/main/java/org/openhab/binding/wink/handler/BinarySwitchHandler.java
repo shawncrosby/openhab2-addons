@@ -34,7 +34,7 @@ public class BinarySwitchHandler extends WinkBaseThingHandler {
     private final Logger logger = LoggerFactory.getLogger(BinarySwitchHandler.class);
 
     @Override
-    public void handleCommand(ChannelUID channelUID, Command command) {
+    public void handleWinkCommand(ChannelUID channelUID, Command command) {
         if (channelUID.getId().equals(CHANNEL_SWITCHSTATE)) {
             if (command.equals(OnOffType.ON)) {
                 setSwitchState(true);

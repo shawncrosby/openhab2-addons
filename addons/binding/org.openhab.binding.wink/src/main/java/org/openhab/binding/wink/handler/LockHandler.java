@@ -35,7 +35,7 @@ public class LockHandler extends WinkBaseThingHandler {
     }
 
     @Override
-    public void handleCommand(ChannelUID channelUID, Command command) {
+    public void handleWinkCommand(ChannelUID channelUID, Command command) {
         if (channelUID.getId().equals(CHANNEL_LOCKSTATE)) {
             if (command.equals(OnOffType.ON)) {
                 logger.debug("Locking Thing: {}", this.thing.getLabel());

@@ -34,5 +34,5 @@ public interface IWinkAuthenticationService {
      *
      * @return String newly refreshed access token
      */
-    public String refreshToken();
+    public String refreshToken() throws RuntimeException;
 }

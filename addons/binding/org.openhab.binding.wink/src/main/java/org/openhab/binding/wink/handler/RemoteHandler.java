@@ -26,7 +26,7 @@ public class RemoteHandler extends WinkBaseThingHandler {
     }
 
     @Override
-    public void handleCommand(ChannelUID channelUID, Command command) {
+    public void handleWinkCommand(ChannelUID channelUID, Command command) {
         // TODO
     }
 

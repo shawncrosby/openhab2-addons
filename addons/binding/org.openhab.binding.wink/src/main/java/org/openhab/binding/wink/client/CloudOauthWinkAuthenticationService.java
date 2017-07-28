@@ -65,7 +65,7 @@ public class CloudOauthWinkAuthenticationService implements IWinkAuthenticationS
     }
 
     @Override
-    public String refreshToken() {
+    public String refreshToken() throws RuntimeException {
         logger.debug("Refreshing token for client id {}", clientId);
         Client winkClient = ClientBuilder.newClient();
         WebTarget target = winkClient.target("https://api.wink.com");
@@ -82,9 +82,14 @@ public class CloudOauthWinkAuthenticationService implements IWinkAuthenticationS
         Response response = newToken.request(MediaType.APPLICATION_JSON_TYPE).post(Entity.json(json));
         JsonObject responseJson = getResultAsJson(response);
 
-        String newAccessToken = responseJson.get("data").getAsJsonObject().get(ACCESS_TOKEN).getAsString();
-        token = newAccessToken;
-        logger.debug("New Access Token: {}", token);
+        if (response.getStatus() == 200) {
+            String newAccessToken = responseJson.get("data").getAsJsonObject().get(ACCESS_TOKEN).getAsString();
+            token = newAccessToken;
+            logger.debug("New Access Token: {}", token);
+        } else {
+            logger.debug("Got status: {} refreshing token", response.getStatus());
+            throw new RuntimeException("Invalid refresh token or app key and secret");
+        }
 
         winkClient.close();
 

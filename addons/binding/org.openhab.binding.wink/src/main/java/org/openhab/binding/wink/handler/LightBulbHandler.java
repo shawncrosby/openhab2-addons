@@ -35,7 +35,7 @@ public class LightBulbHandler extends WinkBaseThingHandler {
     }
 
     @Override
-    public void handleCommand(ChannelUID channelUID, Command command) {
+    public void handleWinkCommand(ChannelUID channelUID, Command command) {
         if (channelUID.getId().equals(CHANNEL_LIGHTLEVEL)) {
             if (command instanceof Number) {
                 logger.debug("Setting brightness {}", command);

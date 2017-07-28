@@ -8,6 +8,7 @@ import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
+import org.eclipse.smarthome.core.types.Command;
 import org.openhab.binding.wink.client.IWinkDevice;
 import org.openhab.binding.wink.client.JsonWinkDevice;
 import org.openhab.binding.wink.client.WinkSupportedDevice;
@@ -48,25 +49,52 @@ public abstract class WinkBaseThingHandler extends BaseThingHandler {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR,
                     "UUID must be specified in Config");
         } else {
-            if (getDevice().getCurrentState().get("connection").equals("true")) {
-                updateStatus(ThingStatus.ONLINE);
-                updateDeviceState(getDevice());
-                registerToPubNub();
-            } else {
-                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, "Device Not Connected");
+            try {
+                if (getDevice().getCurrentState().get("connection").equals("true")) {
+                    updateStatus(ThingStatus.ONLINE);
+                    updateDeviceState(getDevice());
+                    registerToPubNub();
+                } else {
+                    updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.COMMUNICATION_ERROR, "Device Not Connected");
+                }
+            } catch (RuntimeException e) {
+                logger.error("Unable to initialize device: {}", e.getMessage());
+                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_ERROR, e.getMessage());
             }
         }
         super.initialize();
     }
 
     @Override
+    public void handleCommand(ChannelUID channelUID, Command command) {
+        try {
+            handleWinkCommand(channelUID, command);
+        } catch (RuntimeException e) {
+            logger.error("Unable to process command: {}", e.getMessage());
+        }
+
+    }
+
+    /**
+     * Sub-implementation of ThingHandler handleCommand to deal with exception handling more cleanly
+     *
+     * @param channelUID
+     * @param command
+     */
+    protected abstract void handleWinkCommand(ChannelUID channelUID, Command command);
+
+    @Override
     public void channelLinked(ChannelUID channelUID) {
-        for (Channel channel : getThing().getChannels()) {
-            if (channelUID.equals(channel.getUID())) {
-                logger.debug("Channel {} Linked", channelUID.getId());
-                updateDeviceState(getDevice());
-                break;
+        try {
+            for (Channel channel : getThing().getChannels()) {
+                if (channelUID.equals(channel.getUID())) {
+                    updateDeviceState(getDevice());
+                    logger.debug("Channel {} Linked", channelUID.getId());
+                    break;
+                }
             }
+        } catch (RuntimeException e) {
+            logger.error("Unable to process channel link: {}", e.getMessage());
         }
     }
 
@@ -100,37 +128,41 @@ public abstract class WinkBaseThingHandler extends BaseThingHandler {
     protected void registerToPubNub() {
         logger.debug("Doing the PubNub registration for :\n{}", thing.getLabel());
 
-        IWinkDevice device = getDevice();
+        try {
+            IWinkDevice device = getDevice();
 
-        PNConfiguration pnConfiguration = new PNConfiguration();
-        pnConfiguration.setSubscribeKey(device.getPubNubSubscriberKey());
+            PNConfiguration pnConfiguration = new PNConfiguration();
+            pnConfiguration.setSubscribeKey(device.getPubNubSubscriberKey());
 
-        this.pubnub = new PubNub(pnConfiguration);
-        this.pubnub.addListener(new SubscribeCallback() {
-            @Override
-            public void message(PubNub pubnub, PNMessageResult message) {
-                JsonParser parser = new JsonParser();
-                JsonObject jsonMessage = parser.parse(message.getMessage().getAsString()).getAsJsonObject();
-                IWinkDevice device = new JsonWinkDevice(jsonMessage);
-                logger.debug("Received update from device: {}", device);
-                updateDeviceState(device);
-            }
-
-            @Override
-            public void presence(PubNub pubnub, PNPresenceEventResult presence) {
-            }
-
-            @Override
-            public void status(PubNub arg0, PNStatus status) {
-                if (status.isError()) {
-                    logger.error("PubNub communication error: {}", status);
-                } else {
-                    logger.trace("PubNub status: no error.");
+            this.pubnub = new PubNub(pnConfiguration);
+            this.pubnub.addListener(new SubscribeCallback() {
+                @Override
+                public void message(PubNub pubnub, PNMessageResult message) {
+                    JsonParser parser = new JsonParser();
+                    JsonObject jsonMessage = parser.parse(message.getMessage().getAsString()).getAsJsonObject();
+                    IWinkDevice device = new JsonWinkDevice(jsonMessage);
+                    logger.debug("Received update from device: {}", device);
+                    updateDeviceState(device);
                 }
-            }
-        });
 
-        this.pubnub.subscribe().channels(Arrays.asList(device.getPubNubChannel())).execute();
+                @Override
+                public void presence(PubNub pubnub, PNPresenceEventResult presence) {
+                }
+
+                @Override
+                public void status(PubNub arg0, PNStatus status) {
+                    if (status.isError()) {
+                        logger.error("PubNub communication error: {}", status);
+                    } else {
+                        logger.trace("PubNub status: no error.");
+                    }
+                }
+            });
+
+            this.pubnub.subscribe().channels(Arrays.asList(device.getPubNubChannel())).execute();
+        } catch (RuntimeException e) {
+            logger.error("Unable to subscribe to pubnub: {}", e.getMessage());
+        }
     }
 
 }
