@@ -4,7 +4,7 @@ This binding supports devices connected to a Wink Hub via the Wink cloud API.  A
 
 ## Overview
 
-The Wink binding represents a "Hub" as a bridge thing and "Devices" as things connected to the bridge.  Since the binding works only with the Wink API, in order to use it you must obtain a wink application ID and secret and then obtain an initial refresh token using a standard oauth flow.  You can obtain a wink application ID by visiting https://developer.wink.com[https://developer.wink.com].
+The Wink binding represents a "Hub" as a bridge thing and "Devices" as things connected to the bridge.  Since the binding works only with the Wink API, in order to use it you must obtain a wink application ID and secret and then obtain an initial refresh token using a standard oauth flow.  You can obtain a wink application ID by visiting https://developer.wink.com.
 
 ### Hub
 
