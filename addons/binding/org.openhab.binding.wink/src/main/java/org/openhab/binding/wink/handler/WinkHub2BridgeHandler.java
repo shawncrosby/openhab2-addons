@@ -124,8 +124,9 @@ public class WinkHub2BridgeHandler extends BaseBridgeHandler {
     public void setDeviceDimmerLevel(IWinkDevice device, int level) {
         Map<String, String> updatedState = new HashMap<String, String>();
         if (level > 0) {
+            Float fLevel = Float.valueOf(level);
             updatedState.put("powered", "true");
-            updatedState.put("brightness", String.valueOf(level));
+            updatedState.put("brightness", String.valueOf(fLevel / 100.0f));
         } else {
             updatedState.put("powered", "false");
         }
