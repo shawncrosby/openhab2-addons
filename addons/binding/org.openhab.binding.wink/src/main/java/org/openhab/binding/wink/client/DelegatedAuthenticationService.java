@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.wink.client;
 
+import static org.openhab.binding.wink.WinkBindingConstants.DELEGATED_AUTH_SERVICE;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
@@ -30,6 +32,9 @@ import com.google.gson.JsonParser;
  * auth_service = delegated
  * auth_service_token = token_from_auth_service
  *
+ * The authentication service is hosted in Heroku and owned current by Shawn Crosby (sacrosby@gmail.com) and
+ * based on the python-social-auth django app.
+ *
  * @author Shawn Crosby
  *
  */
@@ -43,7 +48,7 @@ public class DelegatedAuthenticationService implements IWinkAuthenticationServic
     public DelegatedAuthenticationService(String auth_token) {
         this.auth_token = auth_token;
         Client client = ClientBuilder.newClient();
-        WebTarget target = client.target("https://openhab-authservice.herokuapp.com");
+        WebTarget target = client.target(DELEGATED_AUTH_SERVICE);
         WebTarget tokenPath = target.path("/token");
         Response response = tokenPath.request(MediaType.APPLICATION_JSON_TYPE)
                 .header("Authorization", "Token " + this.auth_token).get();
@@ -62,7 +67,7 @@ public class DelegatedAuthenticationService implements IWinkAuthenticationServic
     @Override
     public String refreshToken() throws AuthenticationException {
         Client client = ClientBuilder.newClient();
-        WebTarget target = client.target("https://openhab-authservice.herokuapp.com");
+        WebTarget target = client.target(DELEGATED_AUTH_SERVICE);
         WebTarget tokenPath = target.path("/token/refresh");
         Response response = tokenPath.request(MediaType.APPLICATION_JSON_TYPE)
                 .header("Authorization", "Token " + this.auth_token).get();
