@@ -52,7 +52,7 @@ public class DelegatedAuthenticationService implements IWinkAuthenticationServic
         ClientConfig configuration = new ClientConfig();
         configuration = configuration.property(ClientProperties.CONNECT_TIMEOUT, 1000 * 15);
         configuration = configuration.property(ClientProperties.READ_TIMEOUT, 1000 * 15);
-        Client client = ClientBuilder.newClient();
+        Client client = ClientBuilder.newBuilder().withConfig(configuration).build();
         WebTarget target = client.target(DELEGATED_AUTH_SERVICE);
         WebTarget tokenPath = target.path("/token");
         Response response = tokenPath.request(MediaType.APPLICATION_JSON_TYPE)
